@@ -7,7 +7,8 @@ import {
     TextInput,
     TouchableOpacity,
     Platform,
-    FlatList
+    FlatList,
+    Keyboard
 } from 'react-native';
 import { Button } from '../components/Button';
 import { SkillCard } from '../components/SkillCard';
@@ -30,6 +31,13 @@ export function Home() {
         }
         setMySkills(oldState => [...oldState, data])
         setNewSkill('')
+        Keyboard.dismiss()
+
+    }
+
+    function handleRemoveSkill(id: string) {
+        setMySkills(oldState => oldState.filter(
+            skill => skill.id !== id))
     }
 
     useEffect(() => {
@@ -65,6 +73,7 @@ export function Home() {
             />
 
             <Button
+                title='Add'
                 onPress={handleSaveNewSkill}
             />
             <Text style={[styles.title, { marginVertical: 15 }]}>
@@ -76,6 +85,7 @@ export function Home() {
                 renderItem={({ item }) => (
                     <SkillCard
                         skill={item.name}
+                        onPress={() => handleRemoveSkill(item.id)}
 
                     />
                 )}
@@ -89,7 +99,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#121015',
-        paddingHorizontal: 20,
+        paddingHorizontal: 30,
         paddingVertical: 70,
     },
     title: {
@@ -106,19 +116,6 @@ const styles = StyleSheet.create({
         marginTop: 30,
         borderRadius: 7,
 
-    },
-    buttonSkill: {
-        backgroundColor: '#1f1e25',
-        padding: 15,
-        borderRadius: 50,
-        alignItems: 'center',
-        marginVertical: 10,
-
-    },
-    textSkill: {
-        color: '#fff',
-        fontSize: 22,
-        fontWeight: 'bold'
     },
     greeting: {
         color: '#fff'
