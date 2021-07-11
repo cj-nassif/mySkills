@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import {
     View,
@@ -6,27 +6,46 @@ import {
     StyleSheet,
     TextInput,
     TouchableOpacity,
-    Platform
+    Platform,
+    FlatList
 } from 'react-native';
-import { Button } from './components/Button';
-import { SkillCard } from './components/SkillCard';
+import { Button } from '../components/Button';
+import { SkillCard } from '../components/SkillCard';
 
 
 export function Home() {
 
     const [newSkill, setNewSkill] = useState('');
     const [mySkills, setMySkills] = useState([]);
+    const [greeting, setGreeting] = useState('');
 
     function handleSaveNewSkill() {
         setMySkills(oldState => [...oldState, newSkill])
         setNewSkill('')
     }
 
+    useEffect(() => {
+        const currentHour = new Date().getHours();
+
+        if (currentHour < 12) {
+            setGreeting('Good morning')
+        } else if (currentHour >= 12 && currentHour < 18) {
+            setGreeting('Good afternoon')
+        } else {
+            setGreeting('Good night')
+        }
+
+    }, [])
+
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>
                 Welcome, Nassif!
+            </Text>
+
+            <Text style={styles.greeting}>
+                {greeting}
             </Text>
 
             <TextInput
@@ -43,13 +62,17 @@ export function Home() {
             <Text style={[styles.title, { marginVertical: 15 }]}>
                 My Skills
             </Text>
-            {mySkills.map(skill => (
-                <SkillCard
-                    skill={skill}
-                    key={skill}
-                />
-            ))
-            }
+            <FlatList
+                data={mySkills}
+                keyExtractor={item => item}
+                renderItem={({ item }) => (
+                    <SkillCard
+                        skill={item}
+
+                    />
+                )}
+            />
+
         </View>
     );
 }
@@ -88,6 +111,9 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 22,
         fontWeight: 'bold'
+    },
+    greeting: {
+        color: '#fff'
     }
 
 })
